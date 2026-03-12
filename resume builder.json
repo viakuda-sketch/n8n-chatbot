@@ -1,0 +1,246 @@
+{
+  "name": "resume builder",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "051fdb4b-b6ab-4dec-ba56-dbd32f58e63d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        144
+      ],
+      "id": "53e8a49c-2b91-4910-b84c-54e3e096fc86",
+      "name": "Webhook",
+      "webhookId": "051fdb4b-b6ab-4dec-ba56-dbd32f58e63d"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.email }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        368
+      ],
+      "id": "7b378157-cd53-4e7f-81cf-fee5c0e38415",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.email }}",
+        "subject": "=we have successfully generate your html template  {{ $('Webhook').item.json.body.fullName }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Your Resume Is Ready</title>\n</head>\n<body style=\"margin:0; padding:0; background-color:#f4f7fb; font-family:Arial, Helvetica, sans-serif; color:#1f2937;\">\n  <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background-color:#f4f7fb; margin:0; padding:24px 0;\">\n    <tr>\n      <td align=\"center\">\n        <table role=\"presentation\" width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"width:600px; max-width:600px; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.08);\">\n          \n          <!-- Header -->\n          <tr>\n            <td style=\"background-color:#0f172a; padding:32px 40px; text-align:center;\">\n              <h1 style=\"margin:0; font-size:28px; line-height:36px; color:#ffffff; font-weight:700;\">\n                Your Resume Is Ready\n              </h1>\n              <p style=\"margin:10px 0 0 0; font-size:15px; line-height:24px; color:#cbd5e1;\">\n                Professionally generated and ready for your review\n              </p>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"padding:40px;\">\n              <p style=\"margin:0 0 18px 0; font-size:16px; line-height:26px; color:#111827;\">\n                Dear <strong>[User Name]</strong>,\n              </p>\n\n              <p style=\"margin:0 0 18px 0; font-size:16px; line-height:26px; color:#374151;\">\n                We’re pleased to inform you that your resume has been successfully generated and is now ready. Please find your resume attached to this email.\n              </p>\n\n              <p style=\"margin:0 0 18px 0; font-size:16px; line-height:26px; color:#374151;\">\n                We created it to be clean, professional, and aligned with the information you provided. Before sending it to employers, we recommend reviewing the details carefully to ensure everything is accurate and matches your career goals.\n              </p>\n\n              <!-- CTA Box -->\n              <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"margin:28px 0; background-color:#f8fafc; border:1px solid #e5e7eb; border-radius:10px;\">\n                <tr>\n                  <td style=\"padding:24px;\">\n                    <h2 style=\"margin:0 0 12px 0; font-size:20px; line-height:28px; color:#111827;\">\n                      Want a stronger, more competitive resume?\n                    </h2>\n                    <p style=\"margin:0 0 14px 0; font-size:15px; line-height:24px; color:#4b5563;\">\n                      Upgrade to our <strong>Premium Subscription</strong> to unlock advanced features designed to improve your job applications:\n                    </p>\n                    <ul style=\"margin:0; padding-left:20px; color:#374151; font-size:15px; line-height:24px;\">\n                      <li>Premium resume templates</li>\n                      <li>Deeper AI-powered personalization</li>\n                      <li>Multiple resume versions for different roles</li>\n                      <li>Faster edits and regeneration</li>\n                      <li>Enhanced content suggestions and optimization</li>\n                    </ul>\n\n                    <table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"margin-top:20px;\">\n                      <tr>\n                        <td align=\"center\" style=\"border-radius:8px;\" bgcolor=\"#2563eb\">\n                          <a href=\"[Paid Subscription Link]\" target=\"_blank\" style=\"display:inline-block; padding:12px 22px; font-size:15px; font-weight:600; color:#ffffff; text-decoration:none; border-radius:8px;\">\n                            Explore Premium\n                          </a>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                </tr>\n              </table>\n\n              <p style=\"margin:0 0 18px 0; font-size:16px; line-height:26px; color:#374151;\">\n                We’re excited to be part of your career journey and help you present your best professional self.\n              </p>\n\n              <p style=\"margin:0; font-size:16px; line-height:26px; color:#111827;\">\n                Best regards,<br />\n                <strong>[Your Name]</strong><br />\n                [Your Position / Team Name]<br />\n                [Your Platform Name]\n              </p>\n            </td>\n          </tr>\n\n          <!-- Social Media -->\n          <tr>\n            <td style=\"padding:0 40px 30px 40px;\">\n              <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"border-top:1px solid #e5e7eb;\">\n                <tr>\n                  <td style=\"padding-top:24px; text-align:center;\">\n                    <p style=\"margin:0 0 14px 0; font-size:14px; line-height:22px; color:#6b7280;\">\n                      Stay connected with us for career tips, updates, and new features\n                    </p>\n\n                    <p style=\"margin:0; font-size:14px; line-height:24px;\">\n                      <a href=\"[LinkedIn Link]\" target=\"_blank\" style=\"color:#2563eb; text-decoration:none; margin:0 8px;\">LinkedIn</a>\n                      <a href=\"[Facebook Link]\" target=\"_blank\" style=\"color:#2563eb; text-decoration:none; margin:0 8px;\">Facebook</a>\n                      <a href=\"[Instagram Link]\" target=\"_blank\" style=\"color:#2563eb; text-decoration:none; margin:0 8px;\">Instagram</a>\n                      <a href=\"[Twitter/X Link]\" target=\"_blank\" style=\"color:#2563eb; text-decoration:none; margin:0 8px;\">Twitter/X</a>\n                      <a href=\"[Website Link]\" target=\"_blank\" style=\"color:#2563eb; text-decoration:none; margin:0 8px;\">Website</a>\n                    </p>\n                  </td>\n                </tr>\n              </table>\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td style=\"background-color:#f8fafc; padding:20px 40px; text-align:center; border-top:1px solid #e5e7eb;\">\n              <p style=\"margin:0; font-size:12px; line-height:20px; color:#9ca3af;\">\n                © [Year] [Your Platform Name]. All rights reserved.\n              </p>\n              <p style=\"margin:6px 0 0 0; font-size:12px; line-height:20px; color:#9ca3af;\">\n                [Company Address] | [Support Email]\n              </p>\n            </td>\n          </tr>\n\n        </table>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        16
+      ],
+      "id": "b82d8c04-5e07-424c-a8f9-9b1f021a9131",
+      "name": "Send a message",
+      "webhookId": "c5cdef1d-da9c-464a-8842-a6ee85e9a798",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vsC4TS9vuUQHK9oT",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "convert",
+        "operation": "Convert HTML To PDF",
+        "inputDataType": "htmlCode",
+        "htmlCode": "={{ $json.output }}",
+        "docName": "=document.html",
+        "indexFilePath": "="
+      },
+      "type": "n8n-nodes-pdf4me.PDF4me",
+      "typeVersion": 1,
+      "position": [
+        752,
+        16
+      ],
+      "id": "4ef289b0-7e02-42dd-a745-aa4b4a287c16",
+      "name": "Convert Html to PDF",
+      "credentials": {
+        "pdf4meApi": {
+          "id": "W1V2PR9YnE9lIjUs",
+          "name": "PDF4ME account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1392,
+        16
+      ],
+      "id": "4baa9f16-cdc0-48e5-bd00-fda49fa08cd7",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Full name:{{ $json.body.fullName }}\nAddress:{{ $json.body.address }}\nemail:{{ $json.body.email }} \nPhone number:{{ $json.body.phone }} \nexperience:{{ $json.body.experience }} \njob title :{{ $json.body.jobTitle }} \nprofile summary:{{ $json.body.profileSummary }} \nskills:{{ $json.body.skills }} \nprojects:{{ $json.body.projects }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=You are an expert resume designer and HTML resume generator.\n\nYour task is to create a complete, production-ready HTML resume template based on the user's provided resume information.\n\nRules and behavior:\n1. Always generate a full HTML document with embedded CSS inside <style> tags.\n2. The output must be only HTML code, with no explanation, no markdown fences, and no extra text.\n3. Each time you generate a resume, the design must be visually unique while still remaining minimalist, professional, clean, and modern.\n4. Avoid repeating the same exact layout, typography pairing, section styling, spacing pattern, divider style, or header arrangement across generations.\n5. Every design must remain ATS-friendly as much as possible while still looking polished.\n6. Use a professional color palette. Prefer subtle accents, soft neutrals, elegant typography, and strong readability. Do not use loud or overly decorative colors.\n7. Keep the design minimalist: clean alignment, balanced whitespace, clear hierarchy, and no clutter.\n8. Ensure the resume looks professional for real-world job applications.\n9. Use semantic and well-structured HTML sections such as header, summary, experience, education, skills, projects, certifications, achievements, and contact info whenever applicable.\n10. Include only sections that are supported by the provided user data. Do not invent fake content.\n11. If some information is missing, gracefully omit that field or section instead of using placeholders like \"lorem ipsum\", \"N/A\", or dummy text.\n12. Make the layout responsive so it remains readable on desktop and mobile.\n13. Keep the resume printable on A4 paper. Optimize spacing, font sizes, and margins for print.\n14. Use clean CSS only. Do not use external frameworks, JavaScript, Bootstrap, Tailwind, or external assets unless explicitly requested.\n15. Do not include profile photos, icons, charts, skill bars, progress circles, or visual elements that may hurt professionalism or ATS compatibility unless explicitly requested.\n16. Emphasize strong typography, spacing, and section hierarchy rather than decorative effects.\n17. Maintain excellent readability: proper contrast, consistent spacing, clear headings, and concise formatting.\n18. If the user provides custom preferences such as tone, color theme, layout style, or target industry, adapt the design accordingly while keeping it professional.\n19. For each generation, vary elements such as:\n   - overall layout structure\n   - header composition\n   - section separators\n   - typography style\n   - column usage\n   - alignment approach\n   - accent treatment\n   - spacing rhythm\n   while preserving professionalism and simplicity.\n20. The final HTML must be valid, clean, and ready to render in a browser.\nuse the following user provided information to build the resume :\n\nFull name:{{ $json.body.fullName }}\nAddress:{{ $json.body.address }}\nemail:{{ $json.body.email }}\nPhone number:{{ $json.body.phone }}\nexperience:{{ $json.body.experience }}\njob title :{{ $json.body.jobTitle }}\nprofile summary:{{ $json.body.profileSummary }}\nskills:{{ $json.body.skills }}\nprojects:{{ $json.body.projects }}\nContent priority:\n\nOutput requirement:\nReturn only the final HTML document."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        336,
+        32
+      ],
+      "id": "98efde9b-9ceb-48a0-bc01-a0d8402d9ab9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        368
+      ],
+      "id": "46267363-d04e-4739-8ffa-2a9991b8ff06",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "n4YuhsXKHkKgBbiN",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        368,
+        416
+      ],
+      "id": "2f597038-2485-4f80-9170-cb883e71181b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xB5OaEAjgNRCSkrG",
+          "name": "Google Gemini(PaLM) Api account 6"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Html to PDF": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Convert Html to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c772efdd-4d07-47e1-b847-02ebc9a406a9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ed85d0532c7a103ec011cd9be9190628a1704a8fb7caa3ab66b9abaf4cd2bbe"
+  },
+  "id": "9G7Z1LSJOAEUtPK7",
+  "tags": []
+}
