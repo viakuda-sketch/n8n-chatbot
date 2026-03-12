@@ -1,0 +1,230 @@
+{
+  "name": "stock analysis agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "91a35502-81b0-48cb-a8f3-73a336429488",
+      "name": "Telegram Trigger",
+      "webhookId": "d858fe36-4524-41a4-b450-451d14c269d9",
+      "credentials": {
+        "telegramApi": {
+          "id": "Lr3bygrqg62LlVlu",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are a Financial AI Agent that helps users understand stocks and financial markets.\n\nYour tasks:\n\n* Explain financial concepts in simple language.\n* Discuss stocks and market trends.\n* Provide basic educational insights about investing.\n\nWhen a user sends a stock ticker (example: AAPL, TSLA):\n\n1. Identify the stock ticker.\n2. Use the **getchart** tool to generate the price chart.\n3. Look at the chart and explain:\n\n   * The trend (uptrend, downtrend, or sideways)\n   * Possible support and resistance levels\n   * General market sentiment\n\nRules:\n\n* Keep answers short and clear.\n* Do not give guaranteed financial advice.\n* Focus on educational explanations.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        272,
+        -16
+      ],
+      "id": "a5ac0325-7615-43e2-ac5f-471583268465",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        256
+      ],
+      "id": "fd490769-e3c2-40c7-892d-bd3f6bdc5b62",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        -16
+      ],
+      "id": "1defcedc-06e1-4a17-a5bf-078ecb24e4a5",
+      "name": "Send a text message",
+      "webhookId": "d2515bc8-0528-4702-934f-a5a17ed2e532",
+      "credentials": {
+        "telegramApi": {
+          "id": "Lr3bygrqg62LlVlu",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        64,
+        192
+      ],
+      "id": "2839429f-62ee-4dae-9204-31af652dc01b",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "n4YuhsXKHkKgBbiN",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        176,
+        240
+      ],
+      "id": "45a0aa67-7ca0-430f-b8d3-059e33515d32",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "n4YuhsXKHkKgBbiN",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "call this tool to get an analysis of a requested stock.The url that is output from this tool must be returned formal .for example,'[](url)",
+        "workflowId": {
+          "__rl": true,
+          "value": "Kpqumzxa54URWHnf",
+          "mode": "list",
+          "cachedResultName": "My Sub-Workflow 4",
+          "cachedResultUrl": "/workflow/Kpqumzxa54URWHnf"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        240
+      ],
+      "id": "1e1e9236-a84c-4fa2-9ae0-ef131d6d88c7",
+      "name": "Call 'My Sub-Workflow 4'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Call 'My Sub-Workflow 4'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "12b067b0-db74-49f8-a0e8-d3ccda4ce01a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ed85d0532c7a103ec011cd9be9190628a1704a8fb7caa3ab66b9abaf4cd2bbe"
+  },
+  "id": "aUuLTlZFlsDrpjfn",
+  "tags": []
+}
