@@ -1,0 +1,124 @@
+{
+  "name": "storytelling agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Story  automation",
+        "formDescription": "this automation will help you to fulfill your story\n",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "Please enter your name"
+            },
+            {
+              "fieldLabel": "topic ",
+              "placeholder": "write down the kind of story you want like action,horror etc"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d1714317-2749-4ecd-bcbc-5bc407904bd2",
+      "name": "On form submission",
+      "webhookId": "3399603c-38cf-4112-bce4-3f26bb0c74ca"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are an expert creative storyteller.\n\nYour task is to write an engaging, emotional, and immersive story in **Bengali language** based on the topic provided.\n\nStory requirements:\n- The story must be written completely in Bengali.\n- Length should be between 700–1000 words.\n- The story should work for any genre such as mystery, horror, romance, adventure, drama, moral story, Islamic story, or inspirational story depending on the topic.\n- Use vivid descriptions so readers can clearly imagine the environment and characters.\n- Include meaningful character interactions or dialogues where appropriate.\n- Maintain a smooth narrative flow.\n\nStructure the story like this:\n1. **Hook** – Start with an attention-grabbing opening.\n2. **Introduction** – Introduce the main characters and setting.\n3. **Conflict / Challenge** – Present the central problem or mystery.\n4. **Rising tension** – Build suspense, emotion, or excitement.\n5. **Climax / Twist** – Include a surprising or impactful moment if possible.\n6. **Resolution** – Conclude the story in a satisfying way.\n7. **Message** – End with a subtle moral, reflection, or emotional takeaway.\n\nTopic for the story:\n{{ $json.topic }}\n\nAdditional instructions:\n- Keep the language natural and engaging for Bengali readers.\n- Avoid repeating ideas.\n- Make the story feel realistic and emotionally engaging.\n- The story should feel like a short cinematic narrative.\nMake the story in bengeli\n\nNow write the full story."
+            },
+            {
+              "content": "=write a story about {{ $json['topic '] }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "89425e20-df54-4ace-b46f-a2eded44adb7",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "9gDcCDXTa5yMACCs",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "={{ $json.output[0].content[0].text }}"
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        560,
+        0
+      ],
+      "id": "3145fcf4-9839-4f82-ad92-bcd0254ac07b",
+      "name": "Form",
+      "webhookId": "b8928f10-d08c-4cff-be86-2b57d0b3a55b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bcb5bdcc-2315-4000-bc0f-52f8fb139588",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ed85d0532c7a103ec011cd9be9190628a1704a8fb7caa3ab66b9abaf4cd2bbe"
+  },
+  "id": "QwsVyrXI0hpmq7Hy",
+  "tags": []
+}
