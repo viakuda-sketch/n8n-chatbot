@@ -1,0 +1,213 @@
+{
+  "name": "instagram Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Instagram Ai agent",
+        "formDescription": "This agent will help you to find your needed data!",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Whta are you looking for?",
+              "placeholder": "Search keywords"
+            },
+            {
+              "fieldLabel": "Location",
+              "placeholder": "Location"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dbb5819f-775f-4c67-b6bc-e766274a11ab",
+      "name": "On form submission",
+      "webhookId": "0ff0d1b7-be62-4d62-aefd-9e8db06172d1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/apify~google-search-scraper/run-sync-get-dataset-items?token=apify_api_ivjf39xPj2DNJKfSaUJnQDOmfOOhBL01Wkii",
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n    \"chatGptSearch\": {\n        \"enableChatGpt\": false\n    },\n    \"focusOnPaidAds\": false,\n    \"forceExactMatch\": false,\n    \"includeIcons\": false,\n    \"includeUnfilteredResults\": false,\n    \"maxPagesPerQuery\": 1,\n    \"maximumLeadsEnrichmentRecords\": 0,\n    \"mobileResults\": false,\n    \"perplexitySearch\": {\n        \"enablePerplexity\": false,\n        \"returnImages\": false,\n        \"returnRelatedQuestions\": false\n    },\n    \"queries\": \"site:instagram.com + {{ $json['Whta are you looking for?'] }} {{ $json.Location }} \",\n    \"resultsPerPage\": 100,\n    \"saveHtml\": false,\n    \"saveHtmlToKeyValueStore\": true\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fd26c725-cbf3-429e-acd9-787f172883bb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = items[0].json.organicResults;\n\nreturn results\n  .filter(r => r.url.includes(\"instagram.com\") && r.channelName !== \"p\")\n  .map(r => {\n    return {\n      json: {\n        username: r.channelName,\n        profileUrl: r.url,\n        followers: r.followersAmount || null,\n        description: r.description || null,\n        position: r.position\n      }\n    };\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        48
+      ],
+      "id": "85bfc9e9-c28f-448b-8d20-161a048ce062",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "149cSKk6iJX1PzXnvFDsflXLraMK9_uMWAqV6-dhYTMg",
+          "mode": "list",
+          "cachedResultName": "Instagram ai agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/149cSKk6iJX1PzXnvFDsflXLraMK9_uMWAqV6-dhYTMg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/149cSKk6iJX1PzXnvFDsflXLraMK9_uMWAqV6-dhYTMg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "username": "={{ $json.username }}",
+            "profile url ": "={{ $json.profileUrl }}",
+            "followers": "={{ $json.followers }}",
+            "description": "={{ $json.description }}",
+            "position": "={{ $json.position }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "username",
+              "displayName": "username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "profile url ",
+              "displayName": "profile url ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "followers",
+              "displayName": "followers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        48
+      ],
+      "id": "7d3eb057-bd41-4cc0-83c0-83b6ab78cb8d",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cPZFdws0Yr6xwxsD",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b6fa5294-1f88-458f-9d02-2c3fb30f3810",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ed85d0532c7a103ec011cd9be9190628a1704a8fb7caa3ab66b9abaf4cd2bbe"
+  },
+  "id": "amYI7y27lTzSNKXf",
+  "tags": []
+}
