@@ -1,0 +1,255 @@
+{
+  "name": "My Sub-Workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "\nYou are a professional Financial AI Agent specializing in **technical analysis of stock charts and chart images**.\n\nYou have strong **visual analysis capabilities** and can accurately interpret stock chart screenshots, trading indicators, and price movements from images.\n\nYour task is to analyze stock charts and provide clear, structured technical insights.\n\nWhen a user provides a **chart image or screenshot**, follow these steps:\n\n1. Carefully examine the chart.\n2. Identify:\n\n   * Trend direction (Bullish, Bearish, Sideways)\n   * Support and Resistance levels\n",
+        "inputType": "base64",
+        "simplify": false,
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        352
+      ],
+      "id": "9825bae4-18c0-44aa-9f35-0e9f8fff6db2",
+      "name": "Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "9gDcCDXTa5yMACCs",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "7058008521",
+        "file": "={{ $('download chart').item.json.url }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        352
+      ],
+      "id": "941c9ddf-58d1-4aeb-bcef-6d29ff9e98ba",
+      "name": "Send a photo message",
+      "webhookId": "a6c713c1-a48f-4405-9b80-b09b3ebb0ec4",
+      "credentials": {
+        "telegramApi": {
+          "id": "Lr3bygrqg62LlVlu",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "workflow input trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0b3a75f-5981-4408-9201-1e6c579e41ab",
+              "name": "ticker",
+              "value": "={{ $json.query }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        352
+      ],
+      "id": "5e65bcb3-0d74-4cd1-bc09-cb1adf34ba8a",
+      "name": "set ticker"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.chart-img.com/v2/tradingview/advanced-chart/storage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "PXsyWMKlG14ifR2GtJJPB7Bm66VrEZiW3FzblC6Z"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"theme\": \"dark\",\n  \"interval\": \"1W\",\n  \"symbol\": \"NASDAQ:{{ $json.ticker }}\",\n  \"override\": {\n    \"showStudyLastValue\": false\n  },\n  \"studies\": [\n    {\n      \"name\": \"Volume\",\n      \"forceOverlay\": true\n    },\n    {\n      \"name\": \"MACD\",\n      \"override\": {\n        \"Signal.linewidth\": 2,\n        \"Signal.color\": \"rgb(255,65,129)\"\n      }\n    }\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        352
+      ],
+      "id": "964e9e25-ea76-4f68-9d08-b96fc5b26af9",
+      "name": "get chart url"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        896,
+        352
+      ],
+      "id": "b53142ec-474d-4e34-9241-851837aad96a",
+      "name": "download chart"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2886c6cb-2e88-415f-9f27-959ea882540e",
+              "name": "response",
+              "value": "={{ $('Analyze image').item.json.output[0].content[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1488,
+        352
+      ],
+      "id": "28b56f65-b444-4a35-8449-d86e708b66d3",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "workflow input trigger": [
+      {
+        "json": {
+          "query": "AAPL"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "workflow input trigger": {
+      "main": [
+        [
+          {
+            "node": "set ticker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set ticker": {
+      "main": [
+        [
+          {
+            "node": "get chart url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get chart url": {
+      "main": [
+        [
+          {
+            "node": "download chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "download chart": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "9e7f693e-4232-4a56-99f6-c78b974eca8c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ed85d0532c7a103ec011cd9be9190628a1704a8fb7caa3ab66b9abaf4cd2bbe"
+  },
+  "id": "Kpqumzxa54URWHnf",
+  "tags": []
+}
